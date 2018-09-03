@@ -1,12 +1,12 @@
-#include "opencv2/core.hpp"
-#include <opencv2/highgui/highgui.hpp>
-#include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 using namespace std;
 using namespace cv;
 
-string path = "../../../Data/";
+string path = "../../Data/";
 string image = "Lenna.png";
 
 Mat imageRead(string openPath, int flag) {
@@ -20,13 +20,13 @@ Mat imageRead(string openPath, int flag) {
 		cout<<"Image Opened"<<endl;
 		return image;
 	}
-} 
+}
 void imageShow(string imageName, Mat image, int flag) {
 	namedWindow(imageName, flag);
 	cout << "Display "<< imageName << " Channel: " << image.channels() << endl;
-	
+
     imshow(imageName, image);
-	waitKey(0); 
+	waitKey(0);
 }
 Mat mergeChannel(vector<Mat> channels) {
 	Mat result;
@@ -58,28 +58,46 @@ Mat colorSpace(string imageName, Mat image, int flag) {
 	}
 	return dst;
 }
+void savechannels(string path, string ImageName, string channelname, Mat image) {
+	if(image.channels() != 1) {
+		vector<Mat> channels;
+		channels = splitChannel(image);
+		int i;
+		for( i = 0 ; i < 3 ; i++) {
+			imwrite(path+ImageName+"_"+channelname[i]+".bmp", channels[i]);
+		}
+	}
+	else {
+		imwrite(path+ImageName+".bmp", image);
+	}
+	return;
+}
 int main(void) {
     string openPath = path + image;
-	Mat lennaBGR = imageRead(openPath, IMREAD_COLOR);
-	imageShow("lennaBGR", lennaBGR, CV_WINDOW_NORMAL);
-	
+	Mat LennaBGR = imageRead(openPath, IMREAD_COLOR);
+	imageShow("LennaBGR", LennaBGR, CV_WINDOW_NORMAL);
+	savechannels(path, "LennaBGR", "BGR", LennaBGR);
+
 	cout << "CV_BGR2GRAY" << endl;
-	Mat lennaGray = colorSpace("CV_BGR2GRAY", lennaBGR, CV_BGR2GRAY);
-	imageShow("lennaGray", lennaGray, CV_WINDOW_NORMAL);
-	
+	Mat LennaGray = colorSpace("CV_BGR2GRAY", LennaBGR, CV_BGR2GRAY);
+	imageShow("LennaGray", LennaGray, CV_WINDOW_NORMAL);
+	savechannels(path, "LennaGray", "", LennaGray);
+
 	cout << "CV_BGR2HSV" << endl;
-	Mat lennaHSV = colorSpace("CV_BGR2HSV", lennaBGR, CV_BGR2HSV);
-	imageShow("lennaHSV", lennaHSV, CV_WINDOW_NORMAL);
-	
+	Mat LennaHSV = colorSpace("CV_BGR2HSV", LennaBGR, CV_BGR2HSV);
+	imageShow("LennaHSV", LennaHSV, CV_WINDOW_NORMAL);
+	savechannels(path, "LennaHSV", "HSV", LennaHSV);
+
 	cout << "CV_BGR2YUV" << endl;
-	Mat lennaYUV = colorSpace("CV_BGR2YUV", lennaBGR, CV_BGR2YUV);
-	imageShow("lennaYUV", lennaYUV, CV_WINDOW_NORMAL);
-	
+	Mat LennaYUV = colorSpace("CV_BGR2YUV", LennaBGR, CV_BGR2YUV);
+	imageShow("LennaYUV", LennaYUV, CV_WINDOW_NORMAL);
+	savechannels(path, "LennaYUV", "YUV", LennaYUV);
+
 	cout << "CV_BGR2Lab" << endl;
-	Mat lennaLAB = colorSpace("CV_BGR2Lab", lennaBGR, CV_BGR2Lab);
-	imageShow("lennaLAB", lennaLAB, CV_WINDOW_NORMAL);
-	
+	Mat LennaLAB = colorSpace("CV_BGR2Lab", LennaBGR, CV_BGR2Lab);
+	imageShow("LennaLAB", LennaLAB, CV_WINDOW_NORMAL);
+	savechannels(path, "LennaLAB", "LAB", LennaLAB);
+
 	destroyAllWindows();
-	
 	return 0;
 }
