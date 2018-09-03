@@ -3,7 +3,7 @@
 using namespace std;
 using namespace cv;
 
-string path = "../../Data/";
+string path = "../../Data/Lenna_Images/";
 string image = "Lenna.png";
 
 int main(void) {
@@ -33,5 +33,6 @@ int main(void) {
 	saveChannels(path, "LennaLAB", "LAB", LennaLAB);
 
 	destroyAllWindows();
+
 	return 0;
 }

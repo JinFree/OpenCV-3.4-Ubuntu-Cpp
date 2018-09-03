@@ -18,6 +18,7 @@ Mat imageRead(string openPath, int flag) {
 		return image;
 	}
 }
+
 void imageShow(string imageName, Mat image, int flag) {
 	namedWindow(imageName, flag);
 	cout << "Display "<< imageName << " Channel: " << image.channels() << endl;
@@ -25,16 +26,19 @@ void imageShow(string imageName, Mat image, int flag) {
     imshow(imageName, image);
 	waitKey(0);
 }
+
 Mat mergeChannel(vector<Mat> channels) {
 	Mat result;
 	merge(channels,result);
 	return result;
 }
+
 vector<Mat> splitChannel(Mat image) {
 	vector<Mat> channels;
 	split(image, channels);
 	return channels;
 }
+
 void splitChannel(string imageName, Mat image) {
 	vector<Mat> channels;
 	channels = splitChannel(image);
@@ -44,6 +48,7 @@ void splitChannel(string imageName, Mat image) {
 	Mat mergeResult = mergeChannel(channels);
 	imageShow(imageName+"_merge", mergeResult, CV_WINDOW_NORMAL);
 }
+
 Mat colorSpace(string imageName, Mat image, int flag) {
 	Mat dst;
 	cvtColor(image, dst, flag);
@@ -55,7 +60,8 @@ Mat colorSpace(string imageName, Mat image, int flag) {
 	}
 	return dst;
 }
-void savechannels(string path, string ImageName, string channelname, Mat image) {
+
+void saveChannels(string path, string ImageName, string channelname, Mat image) {
 	if(image.channels() != 1) {
 		vector<Mat> channels;
 		channels = splitChannel(image);
