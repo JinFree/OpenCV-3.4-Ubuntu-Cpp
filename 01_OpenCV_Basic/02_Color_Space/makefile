@@ -8,5 +8,5 @@ all :
 	make clean
 	$(CXX) $(SRCS) -o $(OBJS) $(INC) $(LIBS)
 
-	clean :
-		rm -f $(OBJS)
+clean :
+	rm -f $(OBJS)
