@@ -3,9 +3,6 @@
 using namespace std;
 using namespace cv;
 
-string path = "../../Data/Lenna_Images/";
-string image = "Lenna.png";
-
 int main(void) {
     string openPath = path + image;
 	Mat LennaBGR = imageRead(openPath, IMREAD_COLOR);
