@@ -34,45 +34,47 @@ void imageShow(string imageName, Mat image, int flag) {
 }
 Mat thresholdByAt(Mat image, uchar thresh) {
 	int i,j;
-	if(image.type() == CV_8UC1) {
-		for( j = 0 ; j < image.rows ; j++) {
-			for ( i = 0 ; i < image.cols ; i++ ) {
-				uchar value = image.at<uchar>(j,i);
+	Mat result = image.clone();
+	if(result.type() == CV_8UC1) {
+		for( j = 0 ; j < result.rows ; j++) {
+			for ( i = 0 ; i < result.cols ; i++ ) {
+				uchar value = result.at<uchar>(j,i);
 				value = value > thresh ? 255 : 0;
-				image.at<uchar>(j,i) = value;
+				result.at<uchar>(j,i) = value;
 			}
 		}
 	}
-	else if(image.type() == CV_8UC3) {
-		for( j = 0 ; j < image.rows ; j++) {
-			for ( i = 0 ; i < image.cols ; i++ ) {
-				Vec3b value = image.at<Vec3b>(j, i);
+	else if(result.type() == CV_8UC3) {
+		for( j = 0 ; j < result.rows ; j++) {
+			for ( i = 0 ; i < result.cols ; i++ ) {
+				Vec3b value = result.at<Vec3b>(j, i);
 				int c;
 				for(c = 0 ; c < 3 ; c++) {
 					value[c] = value[c] > thresh ? 255 : 0;
 				}
-				image.at<Vec3b>(j,i) = value;
+				result.at<Vec3b>(j,i) = value;
 			}
 		}
 	}
-	return image;
+	return result;
 }
 Mat thresholdByPtr(Mat image, uchar thresh) {
 	int i,j;
-	if(image.type() == CV_8UC1) {
-		for( j = 0 ; j < image.rows ; j++) {
-			uchar* image_pointer = image.ptr<uchar>(j);
-			for ( i = 0 ; i < image.cols ; i++ ) {
+	Mat result = image.clone();
+	if(result.type() == CV_8UC1) {
+		for( j = 0 ; j < result.rows ; j++) {
+			uchar* image_pointer = result.ptr<uchar>(j);
+			for ( i = 0 ; i < result.cols ; i++ ) {
 				uchar value = image_pointer[i];
 				value = value > thresh ? 255 : 0;
 				image_pointer[i] = value;
 			}
 		}
 	}
-	else if(image.type() == CV_8UC3) {
-		for( j = 0 ; j < image.rows ; j++) {
-			uchar* image_pointer = image.ptr<uchar>(j);
-			for ( i = 0 ; i < image.cols ; i++ ) {
+	else if(result.type() == CV_8UC3) {
+		for( j = 0 ; j < result.rows ; j++) {
+			uchar* image_pointer = result.ptr<uchar>(j);
+			for ( i = 0 ; i < result.cols ; i++ ) {
 				int c;
 				for(c = 0 ; c < 3 ; c++) {
 					uchar value = image_pointer[i*3+c];
@@ -82,31 +84,32 @@ Mat thresholdByPtr(Mat image, uchar thresh) {
 			}
 		}
 	}
-	return image;
+	return result;
 }
 Mat thresholdByData(Mat image, uchar thresh) {
-	uchar *image_data = image.data;
 	int i,j;
-	if(image.type() == CV_8UC1) {
-		for( j = 0 ; j < image.rows ; j++) {
-			for ( i = 0 ; i < image.cols ; i++ ) {
-				uchar value = image_data[j * image.cols + i];
+	Mat result = image.clone();
+	uchar *image_data = result.data;
+	if(result.type() == CV_8UC1) {
+		for( j = 0 ; j < result.rows ; j++) {
+			for ( i = 0 ; i < result.cols ; i++ ) {
+				uchar value = image_data[j * result.cols + i];
 				value = value > thresh ? 255 : 0;
-				image_data[j * image.cols + i] = value;
+				image_data[j * result.cols + i] = value;
 			}
 		}
 	}
-	else if(image.type() == CV_8UC3) {
-		for( j = 0 ; j < image.rows ; j++) {
-			for ( i = 0 ; i < image.cols ; i++ ) {
+	else if(result.type() == CV_8UC3) {
+		for( j = 0 ; j < result.rows ; j++) {
+			for ( i = 0 ; i < result.cols ; i++ ) {
 				int c;
 				for(c = 0 ; c < 3 ; c++) {
-					uchar value = image_data[(j * image.cols + i) * 3 + c];
+					uchar value = image_data[(j * result.cols + i) * 3 + c];
 					value = value > thresh ? 255 : 0;
-					image_data[(j * image.cols + i) * 3 + c] = value;
+					image_data[(j * result.cols + i) * 3 + c] = value;
 				}
 			}
 		}
 	}
-	return image;
+	return result;
 }
