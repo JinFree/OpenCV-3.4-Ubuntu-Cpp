@@ -10,6 +10,8 @@ string image = "Lenna.png";
 
 Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
 void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
+Mat createMat(int height = 200, int width = 400, int flag = CV_8UC3, Scalar value = Scalar(0,0,255));
+Mat createMat(int height = 200, int width = 400, int flag = CV_8U, int value = 128);
 
 Mat imageRead(string openPath, int flag) {
 	Mat image = imread(openPath, flag);
@@ -28,4 +30,13 @@ void imageShow(string imageName, Mat image, int flag) {
 	namedWindow(imageName, flag);
     imshow(imageName, image);
 	waitKey(0);
+}
+Mat createMat(int height, int width, int flag, Scalar value) {
+	Mat result(height, width, flag, value);
+	return result;
+}
+
+Mat createMat(int height, int width, int flag, int value) {
+	Mat result(height, width, flag, value);
+	return result;
 }
