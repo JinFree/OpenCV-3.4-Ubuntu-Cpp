@@ -59,23 +59,13 @@ int main(void) {
 
 	imageShow("sudokuGray", sudokuGray);
 
-	Mat CV_Gray_AdaptiveThreshold_MEAN = adaptiveThresholdByCV(sudokuGray, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 0);
+	Mat CV_Gray_AdaptiveThreshold_MEAN = adaptiveThresholdByCV(sudokuGray, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 3, 0);
 	imageShow("CV_Gray_AdaptiveThreshold_MEAN", CV_Gray_AdaptiveThreshold_MEAN);
 
-	Mat CV_Gray_AdaptiveThreshold_GAUSSIAN = adaptiveThresholdByCV(sudokuGray, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 5, 0);
+	Mat CV_Gray_AdaptiveThreshold_GAUSSIAN = adaptiveThresholdByCV(sudokuGray, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 0);
 	imageShow("CV_Gray_AdaptiveThreshold_GAUSSIAN", CV_Gray_AdaptiveThreshold_GAUSSIAN);
 
 	destroyAllWindows();
-	/*Mat CV_Gray_THRESH_BINARY = thresholdByCV(sudokuGray, 128, 255, THRESH_BINARY);
-	imageShow("CV_Gray_THRESH_BINARY", CV_Gray_THRESH_BINARY);
-
-	Mat CV_Gray_THRESH_BINARY = thresholdByCV(sudokuGray, 128, 255, THRESH_BINARY);
-	imageShow("CV_Gray_THRESH_BINARY", CV_Gray_THRESH_BINARY);
-
-	Mat CV_Gray_THRESH_BINARY = thresholdByCV(sudokuGray, 128, 255, THRESH_BINARY);
-	imageShow("CV_Gray_THRESH_BINARY", CV_Gray_THRESH_BINARY);
-
-	destroyAllWindows();*/
-
+	
 	return 0;
 }
