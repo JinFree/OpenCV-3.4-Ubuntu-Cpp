@@ -4,8 +4,8 @@ using namespace std;
 using namespace cv;
 
 int main(void) {
-    string openPath = videoPath+video;
-    VideoCapture capture(openPath);
+    string openPath = video;
+    VideoCapture capture(video);
     if(!capture.isOpened()) {
         return 1;
     }

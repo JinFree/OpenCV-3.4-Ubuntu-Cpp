@@ -10,7 +10,50 @@ string path = "../../Data/Lenna_Images/";
 string image = "Lenna.png";
 string videoPath = "../../Data/Lane_Detection_Videos/";
 string video = "test.mp4";
-
+class videoProcessor {
+public:
+	videoProcessor(string videoPath);
+	bool setInput(string videoPath);
+	bool setOutput(string videoPath, int codec = 0, double framerate = 0.0, bool isColor = true);
+	void showInput(string windowName);
+	void showOutput(string windowName);
+	void run();
+private:
+	VideoCapture capture;
+	string videoReadPath;
+	string videoNameInput;
+	string videoNameOutput;
+	int delay;
+	long frameNumber;
+	long frameToStop;
+	bool stop;
+	VideoWriter writer;
+	string videoWritePath;
+	int currentIndex;
+	int digits;
+	string extension;
+}
+videoProcessor(string videoPath) {
+	setInput(videoPath);
+}
+bool videoProcessor::setInput(string videoPath) {
+	videoReadPath = videoPath;
+	frameNumber = 0;
+	capture.release();
+	return capture.open(videoReadPath);
+}
+bool videoProcessor::setInput(string videoPath, int codec, double framerate, bool isColor) {
+	videoWritePath = videoPath;
+	extension.clear();
+	if(framerate == 0.0) {
+		framerate = getFrameRate();
+	}
+	char c[4];
+	if(codec == 0) {
+		codec = getCodec(c);
+	}
+	return writer.open(videoWritePath, codec, framerate, getFrameSize(), isColor);
+}
 Mat mergeChannel(vector<Mat> channels);
 vector<Mat> splitChannel(Mat image);
 Mat convertColor(Mat image, int flag = CV_BGR2GRAY);
