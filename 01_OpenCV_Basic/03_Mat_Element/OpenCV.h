@@ -8,30 +8,12 @@ using namespace cv;
 string path = "../../Data/Lenna_Images/";
 string image = "Lenna.png";
 
-Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
-void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 Mat thresholdByAt(Mat image, uchar thresh = 128);
 Mat thresholdByPtr(Mat image, uchar thresh = 128);
 Mat thresholdByData(Mat image, uchar thresh = 128);
+Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
+void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
-Mat imageRead(string openPath, int flag) {
-	Mat image = imread(openPath, flag);
-	if(image.empty()) {
-		cout<<"Image Not Opened"<<endl;
-		cout<<"Program Abort"<<endl;
-		exit(1);
-	}
-	else {
-		cout<<"Image Opened"<<endl;
-		return image;
-	}
-}
-void imageShow(string imageName, Mat image, int flag) {
-    cout << "Display "<< imageName << " Channel: " << image.channels() << endl;
-	namedWindow(imageName, flag);
-    imshow(imageName, image);
-	waitKey(0);
-}
 Mat thresholdByAt(Mat image, uchar thresh) {
 	int i,j;
 	Mat result = image.clone();
@@ -112,4 +94,22 @@ Mat thresholdByData(Mat image, uchar thresh) {
 		}
 	}
 	return result;
+}
+Mat imageRead(string openPath, int flag) {
+	Mat image = imread(openPath, flag);
+	if(image.empty()) {
+		cout<<"Image Not Opened"<<endl;
+		cout<<"Program Abort"<<endl;
+		exit(1);
+	}
+	else {
+		cout<<"Image Opened"<<endl;
+		return image;
+	}
+}
+void imageShow(string imageName, Mat image, int flag) {
+    cout << "Display "<< imageName << " Channel: " << image.channels() << endl;
+	namedWindow(imageName, flag);
+    imshow(imageName, image);
+	waitKey(0);
 }

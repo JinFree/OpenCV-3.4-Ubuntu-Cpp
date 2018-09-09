@@ -9,38 +9,19 @@ using namespace cv;
 string path = "../../Data/Lenna_Images/";
 string image = "Lenna.png";
 
-Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
-void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 Mat mergeChannel(vector<Mat> channels);
 vector<Mat> splitChannel(Mat image);
-void splitChannel(string imageName, Mat image);
-Mat colorSpace(string imageName, Mat image, int flag);
+Mat convertColor(Mat image, int flag = CV_BGR2GRAY);
+void showChannels(string imageName, Mat image);
 void saveChannels(string path, string ImageName, string channelname, Mat image);
 Mat adaptiveThresholdByCV(Mat image, double maxValue = 255, int adaptiveMethod = ADAPTIVE_THRESH_GAUSSIAN_C, int thresholdType = THRESH_BINARY, int blockSize = 3, double C = 0);
 Mat thresholdByCV(Mat image, double thresh = 128, double maxval = 255, int type = THRESH_BINARY);
 Mat thresholdByAt(Mat image, uchar thresh = 128);
 Mat thresholdByPtr(Mat image, uchar thresh = 128);
 Mat thresholdByData(Mat image, uchar thresh = 128);
+Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
+void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
-Mat imageRead(string openPath, int flag) {
-	Mat image = imread(openPath, flag);
-	if(image.empty()) {
-		cout<<"Image Not Opened"<<endl;
-		cout<<"Program Abort"<<endl;
-		exit(1);
-	}
-	else {
-		cout<<"Image Opened"<<endl;
-		return image;
-	}
-}
-void imageShow(string imageName, Mat image, int flag) {
-	namedWindow(imageName, flag);
-	cout << "Display "<< imageName << " Channel: " << image.channels() << endl;
-
-    imshow(imageName, image);
-	waitKey(0);
-}
 Mat mergeChannel(vector<Mat> channels) {
 	Mat result;
 	merge(channels,result);
@@ -51,25 +32,23 @@ vector<Mat> splitChannel(Mat image) {
 	split(image, channels);
 	return channels;
 }
-void splitChannel(string imageName, Mat image) {
-	vector<Mat> channels;
-	channels = splitChannel(image);
-	imageShow(imageName+"_0", channels[0], CV_WINDOW_NORMAL);
-	imageShow(imageName+"_1", channels[1], CV_WINDOW_NORMAL);
-	imageShow(imageName+"_2", channels[2], CV_WINDOW_NORMAL);
-	Mat mergeResult = mergeChannel(channels);
-	imageShow(imageName+"_merge", mergeResult, CV_WINDOW_NORMAL);
+Mat convertColor(Mat image, int flag) {
+	Mat result;
+	cvtColor(image, result, flag);
+	return result;
 }
-Mat colorSpace(string imageName, Mat image, int flag) {
-	Mat dst;
-	cvtColor(image, dst, flag);
-	if(dst.channels() != 1) {
-		splitChannel(imageName, dst);
+void showChannels(string imageName, Mat image) {
+	if(image.channels() != 1) {
+		vector<Mat> channels;
+		channels = splitChannel(image);
+		imageShow(imageName+"_0", channels[0]);
+		imageShow(imageName+"_1", channels[1]);
+		imageShow(imageName+"_2", channels[2]);
 	}
-	else {
-		imageShow("GrayScale", dst, CV_WINDOW_NORMAL);
+	else if(image.channels() == 1){
+		imageShow("GrayScale", image);
 	}
-	return dst;
+	return;
 }
 void saveChannels(string path, string ImageName, string channelname, Mat image) {
 	if(image.channels() != 1) {
@@ -175,4 +154,22 @@ Mat thresholdByData(Mat image, uchar thresh) {
 		}
 	}
 	return result;
+}
+Mat imageRead(string openPath, int flag) {
+	Mat image = imread(openPath, flag);
+	if(image.empty()) {
+		cout<<"Image Not Opened"<<endl;
+		cout<<"Program Abort"<<endl;
+		exit(1);
+	}
+	else {
+		cout<<"Image Opened"<<endl;
+		return image;
+	}
+}
+void imageShow(string imageName, Mat image, int flag) {
+	namedWindow(imageName, flag);
+	cout << "Display "<< imageName << " Channel: " << image.channels() << endl;
+    imshow(imageName, image);
+	waitKey(0);
 }
