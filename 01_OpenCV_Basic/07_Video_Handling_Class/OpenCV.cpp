@@ -1,34 +1,14 @@
 #include "OpenCV.h"
+#include "OpenCV_Video.h"
 
 using namespace std;
 using namespace cv;
 
-void videoProcessor::run() {
-	Mat frameInput;
-	Mat frameOutput;
-	if(!isOpened())
-		return;
-	stop = false;
-	while(!isStopped()){
-		if(!readNextFrame(frameInput))
-			break;
-        if(videoNameInput.length() != 0)
-            imshow(videoNameInput, frameInput);
-        //image process
-        frameInput.copyTo(frameOutput);
-        frameOutput = convertColor(frameOutput);
-        frameOutput = thresholdByCV(frameOutput);
-
-        if(videoWritePath.length() != 0)
-            writeNextFrame(frameOutput);
-        if(videoNameOutput.length() != 0)
-            imshow(videoNameOutput, frameOutput);
-        frameNumber++;
-        if(delay >= 0 && waitKey(delay) >= 0)
-            stopIt();
-        if(frameToStop >= 0 && getFrameNumber() == frameToStop)
-            stopIt();
-	}
+Mat videoProcessor::videoProcess(Mat Input) {
+    Mat output = Input.clone();
+    output = convertColor(output);
+    output = thresholdByCV(output);
+    return output;
 }
 int main(void) {
     videoProcessor processor;
