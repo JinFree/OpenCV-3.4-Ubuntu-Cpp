@@ -36,7 +36,6 @@ int main(void) {
     processor.setOutput(videoPath+"output.mp4");
     processor.showInput("Input");
     processor.showOutput("Output");
-    //processor.stopAtFrameNumber(45);
     processor.setDelay(int(1000./processor.getFrameRate()));
     processor.run();
 	return 0;

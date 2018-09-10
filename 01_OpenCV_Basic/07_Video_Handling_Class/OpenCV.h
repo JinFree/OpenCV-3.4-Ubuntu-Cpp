@@ -13,6 +13,7 @@ string videoPath = "../../Data/Lane_Detection_Videos/";
 string video = "test.mp4";
 class videoProcessor {
 public:
+	void run();
 	bool setInput(string videoPath);
 	bool setOutput(string videoPath, int codec = 0, double framerate = 0.0, bool isColor = true);
 	void showInput(string windowName);
@@ -26,7 +27,6 @@ public:
 	bool readNextFrame(Mat& frame);
 	void writeNextFrame(Mat& frame);
 	long getFrameNumber();
-	void run();
 	void stopAtFrameNumber(long frame);
 	int getCodec(char codec[4]);
 private:
