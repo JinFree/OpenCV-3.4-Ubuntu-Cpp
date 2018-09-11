@@ -7,9 +7,15 @@
 using namespace std;
 using namespace cv;
 
-string path = "../../Data/Lenna_Images/";
-string image = "Lenna.png";
+string path = "../../Data/";
+string lennaImage = "Lenna_Images/Lenna.png";
+string roadImage = "Lane_Detection_Images/test.jpg";
 
+Mat bilateralFilter(Mat image, int d = -1, double sigmaColor = 5.0, double sigmaSpace = 5.0, int borderType = BORDER_DEFAULT);
+Mat medianBlur(Mat image, int kernelSize = 5);
+Mat gaussianBlur(Mat image, Size kernelSize = Size(5,5), double sigmaX = 2, double sigmaY = 0, int	borderType = BORDER_DEFAULT);
+Mat meanBlur(Mat image, Size kernelSize = Size(5,5), Point anchor = Point(-1,-1), int borderType = BORDER_DEFAULT);
+Mat addSaltAndPepper(Mat image, double noiseRatio = 0.01);
 Mat mergeChannel(vector<Mat> channels);
 vector<Mat> splitChannel(Mat image);
 Mat convertColor(Mat image, int flag = CV_BGR2GRAY);
@@ -23,6 +29,44 @@ Mat thresholdByData(Mat image, uchar thresh = 128);
 Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
 void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
+Mat bilateralFilter(Mat image, int d, double sigmaColor, double sigmaSpace, int borderType) {
+	Mat result;
+	bilateralFilter(image, result, d, sigmaColor, sigmaSpace, borderType);
+	return result;
+
+}
+Mat medianBlur(Mat image, int kernelSize) {
+	Mat result;
+	medianBlur(image, result, kernelSize);
+	return result;
+}
+Mat gaussianBlur(Mat image, Size kernelSize, double sigmaX, double sigmaY, int borderType) {
+	Mat result;
+	GaussianBlur(image, result, kernelSize, sigmaX, sigmaY, borderType);
+	return result;
+}
+Mat meanBlur(Mat image, Size kernelSize, Point anchor, int borderType) {
+	Mat result;
+	blur(image, result, kernelSize, anchor, borderType);
+	return result;
+}
+Mat addSaltAndPepper(Mat image, double noiseRatio) {
+	Mat result = image.clone();
+	int i;
+	int rows = result.rows;
+	int cols = result.cols;
+	int ch = result.channels();
+	int num_of_noise_pixels = (int)((double)(rows*cols*ch)*noiseRatio);
+	for ( i = 0 ; i < num_of_noise_pixels ; i++ ){
+		int r = rand() % rows;
+		int c = rand() % cols;
+		int _ch = rand() % ch;
+
+		uchar* pixel = result.ptr<uchar>(r)+(c*ch)+_ch;
+		*pixel = (rand()%2==1)?255:0;
+	}
+	return result;
+}
 Mat mergeChannel(vector<Mat> channels) {
 	Mat result;
 	merge(channels,result);
