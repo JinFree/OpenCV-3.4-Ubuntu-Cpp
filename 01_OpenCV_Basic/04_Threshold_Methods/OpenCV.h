@@ -7,7 +7,7 @@ using namespace std;
 using namespace cv;
 
 string path = "../../Data/";
-string image = "sudoku-original.jpg";
+string sudokuImage = "sudoku-original.jpg";
 
 Mat adaptiveThresholdByCV(Mat image, double maxValue = 255, int adaptiveMethod = ADAPTIVE_THRESH_GAUSSIAN_C, int thresholdType = THRESH_BINARY, int blockSize = 3, double C = 0);
 Mat thresholdByCV(Mat image, double thresh = 128, double maxval = 255, int type = THRESH_BINARY);

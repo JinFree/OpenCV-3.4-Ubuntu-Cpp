@@ -2,8 +2,8 @@
 #include "OpenCV.h"
 #include <iomanip>
 
-string videoPath = "../../Data/Lane_Detection_Videos/";
-string video = "test.mp4";
+string roadVideo = "Lane_Detection_Videos/test.mp4";
+
 class videoProcessor {
 public:
 	void run();

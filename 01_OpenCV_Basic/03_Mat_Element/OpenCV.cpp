@@ -5,7 +5,7 @@ using namespace cv;
 
 int main(void) {
 	double timer;
-	string openPath = path + image;
+	string openPath = path + lennaImage;
 	Mat lennaColor = imageRead(openPath, IMREAD_COLOR);
 	imageShow("lennaColor", lennaColor);
 

@@ -4,7 +4,7 @@ using namespace std;
 using namespace cv;
 
 int main(void) {
-	string openPath = path + image;
+	string openPath = path + lennaImage;
 
 	Mat lennaColor = imageRead(openPath, IMREAD_COLOR);
 	Mat lennaGray = imageRead(openPath, IMREAD_GRAYSCALE);
@@ -14,7 +14,7 @@ int main(void) {
 	imageShow("lennaColor, CV_WINDOW_AUTOSIZE", lennaColor, CV_WINDOW_AUTOSIZE);
 	imageShow("lennaGray, WINDOW_OPENGL", lennaGray, WINDOW_OPENGL  );
 
-	string savePath = path + "LennaGray.bmp";
+	string savePath = path + "Lenna_Images/LennaGray.bmp";
 	imwrite(savePath, lennaGray);
 
 	Mat lennaColor2 = imageRead(savePath, CV_LOAD_IMAGE_COLOR);

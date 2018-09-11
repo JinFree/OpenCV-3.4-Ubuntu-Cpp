@@ -6,10 +6,10 @@
 using namespace std;
 using namespace cv;
 
-string path = "../../Data/Lenna_Images/";
-string image = "Lenna.png";
-string videoPath = "../../Data/Lane_Detection_Videos/";
-string video = "test.mp4";
+string path = "../../Data/";
+string lennaImage = "Lenna_Images/Lenna.png";
+string roadImage = "Lane_Detection_Images/test.jpg";
+string roadVideo = "Lane_Detection_Videos/test.mp4";
 
 Mat mergeChannel(vector<Mat> channels);
 vector<Mat> splitChannel(Mat image);

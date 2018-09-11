@@ -5,7 +5,7 @@ using namespace cv;
 
 int main(void) {
 	double timer;
-	string openPath = path + image;
+	string openPath = path + sudokuImage;
 	Mat sudokuColor = imageRead(openPath, IMREAD_COLOR);
 	imageShow("sudokuColor", sudokuColor);
 
@@ -66,6 +66,6 @@ int main(void) {
 	imageShow("CV_Gray_AdaptiveThreshold_GAUSSIAN", CV_Gray_AdaptiveThreshold_GAUSSIAN);
 
 	destroyAllWindows();
-	
+
 	return 0;
 }

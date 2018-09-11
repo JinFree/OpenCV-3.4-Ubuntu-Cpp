@@ -5,8 +5,9 @@
 using namespace std;
 using namespace cv;
 
-string path = "../../Data/Lenna_Images/";
-string image = "Lenna.png";
+string path = "../../Data/";
+string lennaImage = "Lenna_Images/Lenna.png";
+string roadImage = "Lane_Detection_Images/test.jpg";
 
 Mat thresholdByAt(Mat image, uchar thresh = 128);
 Mat thresholdByPtr(Mat image, uchar thresh = 128);
