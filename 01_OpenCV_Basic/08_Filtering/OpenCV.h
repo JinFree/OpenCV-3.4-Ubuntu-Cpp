@@ -16,6 +16,7 @@ Mat medianBlur(Mat image, int kernelSize = 5);
 Mat gaussianBlur(Mat image, Size kernelSize = Size(5,5), double sigmaX = 2, double sigmaY = 0, int	borderType = BORDER_DEFAULT);
 Mat meanBlur(Mat image, Size kernelSize = Size(5,5), Point anchor = Point(-1,-1), int borderType = BORDER_DEFAULT);
 Mat addSaltAndPepper(Mat image, double noiseRatio = 0.01);
+Mat mergeChannel(Mat ch1, Mat ch2, Mat ch3);
 Mat mergeChannel(vector<Mat> channels);
 vector<Mat> splitChannel(Mat image);
 Mat convertColor(Mat image, int flag = CV_BGR2GRAY);
@@ -65,6 +66,15 @@ Mat addSaltAndPepper(Mat image, double noiseRatio) {
 		uchar* pixel = result.ptr<uchar>(r)+(c*ch)+_ch;
 		*pixel = (rand()%2==1)?255:0;
 	}
+	return result;
+}
+Mat mergeChannel(Mat ch1, Mat ch2, Mat ch3) {
+	Mat result;
+	vector<Mat> channels;
+	channels.push_back(ch1);
+	channels.push_back(ch2);
+	channels.push_back(ch3);
+	merge(channels, result);
 	return result;
 }
 Mat mergeChannel(vector<Mat> channels) {

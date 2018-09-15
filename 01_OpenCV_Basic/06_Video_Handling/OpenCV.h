@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -9,8 +10,8 @@ using namespace cv;
 string path = "../../Data/";
 string lennaImage = "Lenna_Images/Lenna.png";
 string roadImage = "Lane_Detection_Images/test.jpg";
-string roadVideo = "Lane_Detection_Videos/test.mp4";
 
+Mat mergeChannel(Mat ch1, Mat ch2, Mat ch3);
 Mat mergeChannel(vector<Mat> channels);
 vector<Mat> splitChannel(Mat image);
 Mat convertColor(Mat image, int flag = CV_BGR2GRAY);
@@ -24,6 +25,15 @@ Mat thresholdByData(Mat image, uchar thresh = 128);
 Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
 void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
+Mat mergeChannel(Mat ch1, Mat ch2, Mat ch3) {
+	Mat result;
+	vector<Mat> channels;
+	channels.push_back(ch1);
+	channels.push_back(ch2);
+	channels.push_back(ch3);
+	merge(channels, result);
+	return result;
+}
 Mat mergeChannel(vector<Mat> channels) {
 	Mat result;
 	merge(channels,result);
