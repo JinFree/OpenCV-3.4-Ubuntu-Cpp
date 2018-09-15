@@ -10,13 +10,16 @@ int main(void) {
     Mat roadGray = convertColor(roadBGR, CV_BGR2GRAY);
     imageShow("roadGray", roadGray);
 
-    Mat roadROI = trapezoidalROI(roadGray, 0.4, 0.65, 0.0, 0.9);
-    imageShow("roadROI", roadROI);
+    Mat roadROI2 = trapezoidalROI(roadGray, 0.35, 0.6, -0.1, 0.95);
+    imageShow("roadROI2", roadROI2);
 
-    Mat roadCanny = cannyEdge(roadROI, 50, 100);
+    Mat roadCanny = cannyEdge(roadROI2, 50, 100);
     imageShow("roadCanny", roadCanny);
 
-    Mat roadSum = weightedSum(roadCanny, roadBGR);
+    Mat roadROI = trapezoidalROI(roadCanny, 0.4, 0.65, 0.0, 0.9);
+    imageShow("roadROI", roadROI);
+
+    Mat roadSum = weightedSum(roadROI, roadBGR);
     imageShow("roadSum", roadSum);
 
     destroyAllWindows();
