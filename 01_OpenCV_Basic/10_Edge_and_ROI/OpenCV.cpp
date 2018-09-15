@@ -10,7 +10,7 @@ int main(void) {
     Mat roadGray = convertColor(roadBGR, CV_BGR2GRAY);
     imageShow("roadGray", roadGray);
 
-    Mat roadROI = trapezoidalROI(roadGray, 0.45, 0.6, 0.0, 1.0);
+    Mat roadROI = trapezoidalROI(roadGray, 0.4, 0.65, 0.0, 0.9);
     imageShow("roadROI", roadROI);
 
     Mat roadCanny = cannyEdge(roadROI, 50, 100);
