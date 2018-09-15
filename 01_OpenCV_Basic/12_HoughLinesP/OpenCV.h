@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -11,7 +11,7 @@ string path = "../../Data/";
 string lennaImage = "Lenna_Images/Lenna.png";
 string roadImage = "Lane_Detection_Images/test.jpg";
 
-Mat drawHoughLinesP(Mat image, double rho = 2.0, double theta = CV_PI / 180.0, int threshold = 15, double minLineLength=40, double maxLineGap=20);
+Mat drawHoughLinesP(Mat image, double rho = 2.0, double theta = 0.5*CV_PI / 180.0, int threshold = 15, double minLineLength=40, double maxLineGap=20);
 Mat drawLines(Mat image, vector<Vec4i> lines);
 vector<Vec4i> detectHoughLinesP(Mat image, double rho = 2.0, double theta = CV_PI / 180.0, int threshold = 15, double minLineLength=40, double maxLineGap=20);
 Mat weightedSum(Mat foregroundImage, Mat backgroundImage, double alpha = 1.0, double beta = 0.8, double gamma = 0.0);
@@ -41,7 +41,8 @@ void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 Mat drawHoughLinesP(Mat image, double rho, double theta, int threshold, double minLineLength, double maxLineGap){
 	vector<Vec4i> lines;
 	HoughLinesP(image, lines, rho, theta, threshold, minLineLength, maxLineGap );
-	Mat result = drawLines(image, lines);
+	Mat result = Mat::zeros(image.rows, image.cols, CV_8UC3);
+	result = drawLines(result, lines);
 	return result;
 }
 Mat drawLines(Mat image, vector<Vec4i> lines) {
