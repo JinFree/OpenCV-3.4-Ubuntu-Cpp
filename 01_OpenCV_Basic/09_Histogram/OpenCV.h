@@ -11,11 +11,14 @@ string path = "../../Data/";
 string lennaImage = "Lenna_Images/Lenna.png";
 string roadImage = "Lane_Detection_Images/test.jpg";
 
+Mat clippedHistogramEqualize(Mat image, double clipLimit = 40.0, Size tileGridSize = Size(4,4));
+Mat histogramEqualize(Mat image);
 Mat bilateralFilter(Mat image, int d = -1, double sigmaColor = 5.0, double sigmaSpace = 5.0, int borderType = BORDER_DEFAULT);
 Mat medianBlur(Mat image, int kernelSize = 5);
 Mat gaussianBlur(Mat image, Size kernelSize = Size(5,5), double sigmaX = 2, double sigmaY = 0, int	borderType = BORDER_DEFAULT);
 Mat meanBlur(Mat image, Size kernelSize = Size(5,5), Point anchor = Point(-1,-1), int borderType = BORDER_DEFAULT);
 Mat addSaltAndPepper(Mat image, double noiseRatio = 0.01);
+Mat mergeChannel(Mat ch1, Mat ch2, Mat ch3);
 Mat mergeChannel(vector<Mat> channels);
 vector<Mat> splitChannel(Mat image);
 Mat convertColor(Mat image, int flag = CV_BGR2GRAY);
@@ -29,11 +32,23 @@ Mat thresholdByData(Mat image, uchar thresh = 128);
 Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
 void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
+Mat clippedHistogramEqualize(Mat image, double clipLimit, Size tileGridSize) {
+	Mat result;
+	cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE();
+	clahe->setClipLimit(clipLimit);
+	clahe->setTilesGridSize(tileGridSize);
+	clahe->apply(image, result);
+	return result;
+}
+Mat histogramEqualize(Mat image) {
+	Mat result;
+	equalizeHist(image, result);
+	return result;
+}
 Mat bilateralFilter(Mat image, int d, double sigmaColor, double sigmaSpace, int borderType) {
 	Mat result;
 	bilateralFilter(image, result, d, sigmaColor, sigmaSpace, borderType);
 	return result;
-
 }
 Mat medianBlur(Mat image, int kernelSize) {
 	Mat result;
@@ -65,6 +80,15 @@ Mat addSaltAndPepper(Mat image, double noiseRatio) {
 		uchar* pixel = result.ptr<uchar>(r)+(c*ch)+_ch;
 		*pixel = (rand()%2==1)?255:0;
 	}
+	return result;
+}
+Mat mergeChannel(Mat ch1, Mat ch2, Mat ch3) {
+	Mat result;
+	vector<Mat> channels;
+	channels.push_back(ch1);
+	channels.push_back(ch2);
+	channels.push_back(ch3);
+	merge(channels, result);
 	return result;
 }
 Mat mergeChannel(vector<Mat> channels) {
