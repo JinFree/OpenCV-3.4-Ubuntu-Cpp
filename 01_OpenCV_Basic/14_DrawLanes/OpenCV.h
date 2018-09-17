@@ -42,9 +42,9 @@ Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
 void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
 Mat drawLanes(Mat image, vector<Vec4i> lines) {
-    Mat result = image.clone();
-	if(result.channels() == 1)
-		result = convertColor(result, CV_GRAY2BGR);
+    int w = image.cols;
+	int h = image.rows;
+	Mat result = Mat::zeros(h,w,CV_8UC3);
 	size_t i;
     vector<Point> left_x, left_y, right_x, right_y;
 	for( i = 0; i < lines.size(); i++ ) {
@@ -66,7 +66,6 @@ Mat drawLanes(Mat image, vector<Vec4i> lines) {
             right_x.push_back(Point(x1, x2));
             right_y.push_back(Point(y1, y2));
         }
-        printf("x1 = %d, y1 = %d, x2 = %d, y2 = %d\n", x1, y1, x2, y2);
  	}
     int sum1 = 0;
     int sum2 = 0;
@@ -86,21 +85,13 @@ Mat drawLanes(Mat image, vector<Vec4i> lines) {
     int right_x1 = (double)sum1/(double)temp;
     int right_x2 = (double)sum2/(double)temp;
 
-    int min_y = image.rows * 0.6;
-    int max_y = image.rows;
-    cout << left_x1 << ","<<left_x2<<endl;
-    cout << right_x1 << ","<<right_x2<<endl;
-    line( result, Point(left_x1, max_y), Point(left_x2, min_y), Scalar(0,0,255), 3, CV_AA);
-    line( result, Point(right_x1, min_y), Point(right_x2, max_y), Scalar(0,0,255), 3, CV_AA);
-
-    /*sum1 = sum2 = 0;
+    sum1 = sum2 = 0;
     for (temp = 0 ; temp < left_y.size();temp++) {
         sum1 += left_y[temp].x;
         sum2 += left_y[temp].y;
     }
     int left_y1 = (double)sum1/(double)temp;
     int left_y2 = (double)sum2/(double)temp;
-
 
     sum1 = sum2 = 0;
     for (temp = 0 ; temp < right_y.size();temp++) {
@@ -110,8 +101,17 @@ Mat drawLanes(Mat image, vector<Vec4i> lines) {
     int right_y1 = (double)sum1/(double)temp;
     int right_y2 = (double)sum2/(double)temp;
 
-    cout << left_x1 << ", "<< left_y1 << ", "<< left_x2 << ", "<< left_y2 << endl;
-    cout << right_x1<< ", "<<right_y1<< ", "<<right_x2<< ", "<<right_y2<<endl;*/
+    int min_y = image.rows * 0.6;
+    int max_y = image.rows;
+
+    int left_min_x = double((min_y - left_y1) * (left_x2 - left_x1) )/double(left_y2-left_y1)+left_x1;
+    int left_max_x = double((max_y - left_y1) * (left_x2 - left_x1) )/double(left_y2-left_y1)+left_x1;
+
+    int right_min_x = double((min_y - right_y1) * (right_x2 - right_x1) )/double(right_y2-right_y1)+right_x1;
+    int right_max_x = double((max_y - right_y1) * (right_x2 - right_x1) )/double(right_y2-right_y1)+right_x1;
+
+    line( result, Point(left_min_x, min_y), Point(left_max_x, max_y), Scalar(0,0,255), 3, CV_AA);
+    line( result, Point(right_min_x, min_y), Point(right_max_x, max_y), Scalar(0,0,255), 3, CV_AA);
 
 	return result;
 }
@@ -128,9 +128,9 @@ Mat drawHoughLinesP(Mat image, double rho, double theta, int threshold, double m
 	return result;
 }
 Mat drawLines(Mat image, vector<Vec4i> lines) {
-    Mat result = image.clone();
-	if(result.channels() == 1)
-		result = convertColor(result, CV_GRAY2BGR);
+    int w = image.cols;
+	int h = image.rows;
+	Mat result = Mat::zeros(h,w,CV_8UC3);
 	size_t i;
 	for( i = 0; i < lines.size(); i++ ) {
 		Vec4i l = lines[i];

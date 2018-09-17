@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cmath>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -11,6 +12,8 @@ string path = "../../Data/";
 string lennaImage = "Lenna_Images/Lenna.png";
 string roadImage = "Lane_Detection_Images/test.jpg";
 
+Mat drawLanes(Mat image, vector<Vec4i> lines);
+vector<Vec4i> HoughLinesP(Mat image, double rho = 1.0, double theta = CV_PI / 60.0, int threshold = 20, double minLineLength=10, double maxLineGap=50);
 Mat drawHoughLinesP(Mat image, double rho = 1.0, double theta = CV_PI / 60.0, int threshold = 20, double minLineLength=10, double maxLineGap=50);
 Mat drawLines(Mat image, vector<Vec4i> lines);
 vector<Vec4i> detectHoughLinesP(Mat image, double rho = 2.0, double theta = CV_PI / 180.0, int threshold = 15, double minLineLength=40, double maxLineGap=20);
@@ -38,6 +41,85 @@ Mat thresholdByData(Mat image, uchar thresh = 128);
 Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
 void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
+Mat drawLanes(Mat image, vector<Vec4i> lines) {
+   int w = image.cols;
+   int h = image.rows;
+   Mat result = Mat::zeros(h,w,CV_8UC3);
+   size_t i;
+   vector<Point> left_x, left_y, right_x, right_y;
+   for( i = 0; i < lines.size(); i++ ) {
+       Vec4i l = lines[i];
+       int x1, x2, y1, y2;
+       x1 = l[0];
+       y1 = l[1];
+       x2 = l[2];
+       y2 = l[3];
+       double slope = (double)(y2-y1)/(double)(x2-x1);
+       if (abs(slope) < 0.5 ) {
+           continue;
+       }
+       if ( slope <= 0 ) {
+           left_x.push_back(Point(x1, x2));
+           left_y.push_back(Point(y1, y2));
+       }
+       else {
+           right_x.push_back(Point(x1, x2));
+           right_y.push_back(Point(y1, y2));
+       }
+   }
+   int sum1 = 0;
+   int sum2 = 0;
+   int temp = 0;
+   for (temp = 0 ; temp < left_x.size();temp++) {
+       sum1 += left_x[temp].x;
+       sum2 += left_x[temp].y;
+   }
+   int left_x1 = (double)sum1/(double)temp;
+   int left_x2 = (double)sum2/(double)temp;
+
+   sum1 = sum2 = 0;
+   for (temp = 0 ; temp < right_x.size();temp++) {
+       sum1 += right_x[temp].x;
+       sum2 += right_x[temp].y;
+   }
+   int right_x1 = (double)sum1/(double)temp;
+   int right_x2 = (double)sum2/(double)temp;
+
+   sum1 = sum2 = 0;
+   for (temp = 0 ; temp < left_y.size();temp++) {
+       sum1 += left_y[temp].x;
+       sum2 += left_y[temp].y;
+   }
+   int left_y1 = (double)sum1/(double)temp;
+   int left_y2 = (double)sum2/(double)temp;
+
+   sum1 = sum2 = 0;
+   for (temp = 0 ; temp < right_y.size();temp++) {
+       sum1 += right_y[temp].x;
+       sum2 += right_y[temp].y;
+   }
+   int right_y1 = (double)sum1/(double)temp;
+   int right_y2 = (double)sum2/(double)temp;
+
+   int min_y = image.rows * 0.6;
+   int max_y = image.rows;
+
+   int left_min_x = double((min_y - left_y1) * (left_x2 - left_x1) )/double(left_y2-left_y1)+left_x1;
+   int left_max_x = double((max_y - left_y1) * (left_x2 - left_x1) )/double(left_y2-left_y1)+left_x1;
+
+   int right_min_x = double((min_y - right_y1) * (right_x2 - right_x1) )/double(right_y2-right_y1)+right_x1;
+   int right_max_x = double((max_y - right_y1) * (right_x2 - right_x1) )/double(right_y2-right_y1)+right_x1;
+
+   line( result, Point(left_min_x, min_y), Point(left_max_x, max_y), Scalar(0,0,255), 3, CV_AA);
+   line( result, Point(right_min_x, min_y), Point(right_max_x, max_y), Scalar(0,0,255), 3, CV_AA);
+
+   return result;
+}
+vector<Vec4i> HoughLinesP(Mat image, double rho, double theta, int threshold, double minLineLength, double maxLineGap){
+   vector<Vec4i> lines;
+   HoughLinesP(image, lines, rho, theta, threshold, minLineLength, maxLineGap );
+   return lines;
+}
 Mat drawHoughLinesP(Mat image, double rho, double theta, int threshold, double minLineLength, double maxLineGap){
    vector<Vec4i> lines;
    HoughLinesP(image, lines, rho, theta, threshold, minLineLength, maxLineGap );
@@ -51,8 +133,8 @@ Mat drawLines(Mat image, vector<Vec4i> lines) {
    Mat result = Mat::zeros(h,w,CV_8UC3);
    size_t i;
    for( i = 0; i < lines.size(); i++ ) {
-	   Vec4i l = lines[i];
-	   line( result, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
+       Vec4i l = lines[i];
+       line( result, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
    }
    return result;
 }
@@ -64,15 +146,15 @@ vector<Vec4i> detectHoughLinesP(Mat image, double rho, double theta, int thresho
 Mat weightedSum(Mat foregroundImage, Mat backgroundImage, double alpha, double beta, double gamma) {
    Mat result = foregroundImage.clone();
    if(backgroundImage.channels() == 3 && foregroundImage.channels()==1) {
-	   vector<Mat> channels = splitChannel(backgroundImage);
-	   addWeighted(result, alpha, channels[2], beta, gamma, result);
-	   result = mergeChannel(channels[0], channels[1], result);
+       vector<Mat> channels = splitChannel(backgroundImage);
+       addWeighted(result, alpha, channels[2], beta, gamma, result);
+       result = mergeChannel(channels[0], channels[1], result);
    }
    else if(backgroundImage.channels() == 1 && foregroundImage.channels()==1) {
-	   addWeighted(result, alpha, backgroundImage, beta, gamma, result);
+       addWeighted(result, alpha, backgroundImage, beta, gamma, result);
    }
    else if(backgroundImage.channels() == 3 && foregroundImage.channels()==3) {
-	   addWeighted(result, alpha, backgroundImage, beta, gamma, result);
+       addWeighted(result, alpha, backgroundImage, beta, gamma, result);
    }
 
    return result;
@@ -141,12 +223,12 @@ Mat addSaltAndPepper(Mat image, double noiseRatio) {
    int ch = result.channels();
    int num_of_noise_pixels = (int)((double)(rows*cols*ch)*noiseRatio);
    for ( i = 0 ; i < num_of_noise_pixels ; i++ ){
-	   int r = rand() % rows;
-	   int c = rand() % cols;
-	   int _ch = rand() % ch;
+       int r = rand() % rows;
+       int c = rand() % cols;
+       int _ch = rand() % ch;
 
-	   uchar* pixel = result.ptr<uchar>(r)+(c*ch)+_ch;
-	   *pixel = (rand()%2==1)?255:0;
+       uchar* pixel = result.ptr<uchar>(r)+(c*ch)+_ch;
+       *pixel = (rand()%2==1)?255:0;
    }
    return result;
 }
@@ -176,28 +258,28 @@ Mat convertColor(Mat image, int flag) {
 }
 void showChannels(string imageName, Mat image) {
    if(image.channels() != 1) {
-	   vector<Mat> channels;
-	   channels = splitChannel(image);
-	   imageShow(imageName+"_0", channels[0]);
-	   imageShow(imageName+"_1", channels[1]);
-	   imageShow(imageName+"_2", channels[2]);
+       vector<Mat> channels;
+       channels = splitChannel(image);
+       imageShow(imageName+"_0", channels[0]);
+       imageShow(imageName+"_1", channels[1]);
+       imageShow(imageName+"_2", channels[2]);
    }
    else if(image.channels() == 1){
-	   imageShow("GrayScale", image);
+       imageShow("GrayScale", image);
    }
    return;
 }
 void saveChannels(string path, string ImageName, string channelname, Mat image) {
    if(image.channels() != 1) {
-	   vector<Mat> channels;
-	   channels = splitChannel(image);
-	   int i;
-	   for( i = 0 ; i < 3 ; i++) {
-		   imwrite(path+ImageName+"_"+channelname[i]+".bmp", channels[i]);
-	   }
+       vector<Mat> channels;
+       channels = splitChannel(image);
+       int i;
+       for( i = 0 ; i < 3 ; i++) {
+           imwrite(path+ImageName+"_"+channelname[i]+".bmp", channels[i]);
+       }
    }
    else {
-	   imwrite(path+ImageName+".bmp", image);
+       imwrite(path+ImageName+".bmp", image);
    }
    return;
 }
@@ -215,25 +297,25 @@ Mat thresholdByAt(Mat image, uchar thresh) {
    int i,j;
    Mat result = image.clone();
    if(result.type() == CV_8UC1) {
-	   for( j = 0 ; j < result.rows ; j++) {
-		   for ( i = 0 ; i < result.cols ; i++ ) {
-			   uchar value = result.at<uchar>(j,i);
-			   value = value > thresh ? 255 : 0;
-			   result.at<uchar>(j,i) = value;
-		   }
-	   }
+       for( j = 0 ; j < result.rows ; j++) {
+           for ( i = 0 ; i < result.cols ; i++ ) {
+               uchar value = result.at<uchar>(j,i);
+               value = value > thresh ? 255 : 0;
+               result.at<uchar>(j,i) = value;
+           }
+       }
    }
    else if(result.type() == CV_8UC3) {
-	   for( j = 0 ; j < result.rows ; j++) {
-		   for ( i = 0 ; i < result.cols ; i++ ) {
-			   Vec3b value = result.at<Vec3b>(j, i);
-			   int c;
-			   for(c = 0 ; c < 3 ; c++) {
-				   value[c] = value[c] > thresh ? 255 : 0;
-			   }
-			   result.at<Vec3b>(j,i) = value;
-		   }
-	   }
+       for( j = 0 ; j < result.rows ; j++) {
+           for ( i = 0 ; i < result.cols ; i++ ) {
+               Vec3b value = result.at<Vec3b>(j, i);
+               int c;
+               for(c = 0 ; c < 3 ; c++) {
+                   value[c] = value[c] > thresh ? 255 : 0;
+               }
+               result.at<Vec3b>(j,i) = value;
+           }
+       }
    }
    return result;
 }
@@ -241,27 +323,27 @@ Mat thresholdByPtr(Mat image, uchar thresh) {
    int i,j;
    Mat result = image.clone();
    if(result.type() == CV_8UC1) {
-	   for( j = 0 ; j < result.rows ; j++) {
-		   uchar* image_pointer = result.ptr<uchar>(j);
-		   for ( i = 0 ; i < result.cols ; i++ ) {
-			   uchar value = image_pointer[i];
-			   value = value > thresh ? 255 : 0;
-			   image_pointer[i] = value;
-		   }
-	   }
+       for( j = 0 ; j < result.rows ; j++) {
+           uchar* image_pointer = result.ptr<uchar>(j);
+           for ( i = 0 ; i < result.cols ; i++ ) {
+               uchar value = image_pointer[i];
+               value = value > thresh ? 255 : 0;
+               image_pointer[i] = value;
+           }
+       }
    }
    else if(result.type() == CV_8UC3) {
-	   for( j = 0 ; j < result.rows ; j++) {
-		   uchar* image_pointer = result.ptr<uchar>(j);
-		   for ( i = 0 ; i < result.cols ; i++ ) {
-			   int c;
-			   for(c = 0 ; c < 3 ; c++) {
-				   uchar value = image_pointer[i*3+c];
-				   value = value > thresh ? 255 : 0;
-				   image_pointer[i*3+c] = value;
-			   }
-		   }
-	   }
+       for( j = 0 ; j < result.rows ; j++) {
+           uchar* image_pointer = result.ptr<uchar>(j);
+           for ( i = 0 ; i < result.cols ; i++ ) {
+               int c;
+               for(c = 0 ; c < 3 ; c++) {
+                   uchar value = image_pointer[i*3+c];
+                   value = value > thresh ? 255 : 0;
+                   image_pointer[i*3+c] = value;
+               }
+           }
+       }
    }
    return result;
 }
@@ -270,38 +352,38 @@ Mat thresholdByData(Mat image, uchar thresh) {
    Mat result = image.clone();
    uchar *image_data = result.data;
    if(result.type() == CV_8UC1) {
-	   for( j = 0 ; j < result.rows ; j++) {
-		   for ( i = 0 ; i < result.cols ; i++ ) {
-			   uchar value = image_data[j * result.cols + i];
-			   value = value > thresh ? 255 : 0;
-			   image_data[j * result.cols + i] = value;
-		   }
-	   }
+       for( j = 0 ; j < result.rows ; j++) {
+           for ( i = 0 ; i < result.cols ; i++ ) {
+               uchar value = image_data[j * result.cols + i];
+               value = value > thresh ? 255 : 0;
+               image_data[j * result.cols + i] = value;
+           }
+       }
    }
    else if(result.type() == CV_8UC3) {
-	   for( j = 0 ; j < result.rows ; j++) {
-		   for ( i = 0 ; i < result.cols ; i++ ) {
-			   int c;
-			   for(c = 0 ; c < 3 ; c++) {
-				   uchar value = image_data[(j * result.cols + i) * 3 + c];
-				   value = value > thresh ? 255 : 0;
-				   image_data[(j * result.cols + i) * 3 + c] = value;
-			   }
-		   }
-	   }
+       for( j = 0 ; j < result.rows ; j++) {
+           for ( i = 0 ; i < result.cols ; i++ ) {
+               int c;
+               for(c = 0 ; c < 3 ; c++) {
+                   uchar value = image_data[(j * result.cols + i) * 3 + c];
+                   value = value > thresh ? 255 : 0;
+                   image_data[(j * result.cols + i) * 3 + c] = value;
+               }
+           }
+       }
    }
    return result;
 }
 Mat imageRead(string openPath, int flag) {
    Mat image = imread(openPath, flag);
    if(image.empty()) {
-	   cout<<"Image Not Opened"<<endl;
-	   cout<<"Program Abort"<<endl;
-	   exit(1);
+       cout<<"Image Not Opened"<<endl;
+       cout<<"Program Abort"<<endl;
+       exit(1);
    }
    else {
-	   cout<<"Image Opened"<<endl;
-	   return image;
+       cout<<"Image Opened"<<endl;
+       return image;
    }
 }
 void imageShow(string imageName, Mat image, int flag) {

@@ -46,9 +46,9 @@ Mat drawHoughLinesP(Mat image, double rho, double theta, int threshold, double m
 	return result;
 }
 Mat drawLines(Mat image, vector<Vec4i> lines) {
-	Mat result = image.clone();
-	if(result.channels() == 1)
-		result = convertColor(result, CV_GRAY2BGR);
+    int w = image.cols;
+	int h = image.rows;
+	Mat result = Mat::zeros(h,w,CV_8UC3);
 	size_t i;
 	for( i = 0; i < lines.size(); i++ ) {
 		Vec4i l = lines[i];
