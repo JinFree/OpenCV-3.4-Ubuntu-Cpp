@@ -2,7 +2,7 @@
 #include "OpenCV.h"
 #include <iomanip>
 
-string roadVideo = "Lane_Detection_Videos/test.mp4";
+string roadVideo = "Lane_Detection_Videos/solidWhiteRight.mp4";
 
 class videoProcessor {
 public:

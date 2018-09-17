@@ -19,7 +19,7 @@ int main(void) {
     Mat roadROI = trapezoidalROI(roadCanny, 0.4, 0.65, 0.0, 0.9);
     imageShow("roadROI", roadROI);
 
-    Mat roadLines = drawHoughLinesP(roadROI, 6.0, CV_PI/60.0, 100, 20, 25);
+    Mat roadLines = drawHoughLinesP(roadROI, 1.0, CV_PI/60.0, 20, 10, 50);
     imageShow("roadLines", roadLines);
 
     Mat roadSum = weightedSum(roadLines, roadBGR);

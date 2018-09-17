@@ -10,7 +10,7 @@ Mat videoProcessor::videoProcess(Mat Input) {
     output = trapezoidalROI(output, 0.35, 0.6, -0.1, 0.95);
     output = cannyEdge(output, 50,100);
     output = trapezoidalROI(output, 0.4, 0.65, 0.0, 0.9);
-    output = drawHoughLinesP(output, 6.0, CV_PI/60.0, 100, 20, 25);
+    output = drawHoughLinesP(output, 1.0, CV_PI/60.0, 20, 10, 50);
     output = weightedSum(output, Input);
     return output;
 }

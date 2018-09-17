@@ -11,7 +11,7 @@ string path = "../../Data/";
 string lennaImage = "Lenna_Images/Lenna.png";
 string roadImage = "Lane_Detection_Images/test.jpg";
 
-Mat drawHoughLinesP(Mat image, double rho = 6.0, double theta = CV_PI / 60.0, int threshold = 100, double minLineLength=20, double maxLineGap=25);
+Mat drawHoughLinesP(Mat image, double rho = 1.0, double theta = CV_PI / 60.0, int threshold = 20, double minLineLength=10, double maxLineGap=50);
 Mat drawLines(Mat image, vector<Vec4i> lines);
 vector<Vec4i> detectHoughLinesP(Mat image, double rho = 2.0, double theta = CV_PI / 180.0, int threshold = 15, double minLineLength=40, double maxLineGap=20);
 Mat weightedSum(Mat foregroundImage, Mat backgroundImage, double alpha = 1.0, double beta = 0.8, double gamma = 0.0);
