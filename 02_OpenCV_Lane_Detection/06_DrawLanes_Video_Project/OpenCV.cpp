@@ -5,18 +5,6 @@ using namespace std;
 using namespace cv;
 Mat videoProcessing(Mat Input) {
     Mat output = Input.clone();
-    Mat HSV = convertColor(output, CV_BGR2HSV);
-    vector<Mat> HSV_HSV, HSV_Equalized, RGB_RGB, RGB_Equalized;
-    HSV_HSV = splitChannel(HSV);
-    HSV_Equalized = splitChannel(HSV);
-    RGB_RGB = splitChannel(Input);
-    RGB_Equalized = splitChannel(Input);
-    int i;
-    for(i = 0 ; i < 3 ; i++) {
-        HSV_Equalized[i] = histogramEqualize(HSV_Equalized[i]);
-        RGB_Equalized[i] = histogramEqualize(RGB_Equalized[i]);
-    }
-    /*
     output = convertColor(output, CV_BGR2GRAY);
     output = trapezoidalROI(output, 0.35, 0.6, -0.1, 0.95);
     output = cannyEdge(output, 50,100);
@@ -24,18 +12,17 @@ Mat videoProcessing(Mat Input) {
     vector<Vec4i> lines = HoughLinesP(output, 1.0, CV_PI/60.0, 20, 10, 50);
     output = drawLanes(output, lines);
     output = weightedSum(output, Input);
-    */
+    return output;
 }
 Mat videoProcessor::videoProcess(Mat Input) {
     Mat output = Input.clone();
-
     output = videoProcessing(output);
     return output;
 }
 int main(void) {
     videoProcessor processor;
     processor.setInput(path+roadVideo);
-    processor.setOutput(path+"Lane_Detection_Videos/draw_lane_project.mp4");
+    processor.setOutput(path+"Lane_Detection_Videos/draw_lane_project_first.mp4");
     processor.showInput("Input");
     processor.showOutput("Output");
     processor.setDelay(int(1000./processor.getFrameRate()));

@@ -5,19 +5,23 @@ using namespace cv;
 Mat videoProcessing(Mat Input) {
     Mat output = Input.clone();
     Mat HSV = convertColor(output, CV_BGR2HSV);
-    vector<Mat> HSV_HSV, HSV_Equalized, RGB_RGB, RGB_Equalized;
+    vector<Mat> HSV_HSV, HSV_Equalized;
     HSV_HSV = splitChannel(HSV);
     HSV_Equalized = splitChannel(HSV);
-    RGB_RGB = splitChannel(Input);
-    RGB_Equalized = splitChannel(Input);
-    int i;
-    for(i = 0 ; i < 3 ; i++) {
-        HSV_Equalized[i] = histogramEqualize(HSV_Equalized[i]);
-        RGB_Equalized[i] = histogramEqualize(RGB_Equalized[i]);
-    }
-
+    HSV_Equalized[1] = histogramEqualize(HSV_Equalized[1]);
+    HSV_Equalized[2] = histogramEqualize(HSV_Equalized[2]);
+    Mat S_E_T_white = thresholdByCV(HSV_Equalized[1], 50, 255, THRESH_TOZERO_INV);
+    Mat HSV_S_E_T_W = mergeChannel(HSV_HSV[0], S_E_T_white, HSV_Equalized[2]);
+    Mat RGB_HSV_W = convertColor(HSV_S_E_T_W, CV_HSV2BGR);
+    Mat W_gray = convertColor(RGB_HSV_W, CV_BGR2GRAY);
+    Mat gray_th = thresholdByCV(W_gray, 240, 255, THRESH_BINARY);
+    Mat roadROI2 = trapezoidalROI(gray_th, 0.35, 0.6, -0.1, 0.95);
+    Mat roadCanny = cannyEdge(roadROI2, 50, 100);
+    Mat roadROI = trapezoidalROI(roadCanny, 0.4, 0.65, 0.0, 0.9);
+    vector<Vec4i> lines = HoughLinesP(roadROI, 1.0, CV_PI/60.0, 20, 10, 50);
+    Mat roadLines = drawLanes(roadROI, lines);
+    output = weightedSum(roadLines, output);
     return output;
-
 }
 int main(void) {
     string roadImagePath = "../../Data/Lane_Detection_Images"/;
