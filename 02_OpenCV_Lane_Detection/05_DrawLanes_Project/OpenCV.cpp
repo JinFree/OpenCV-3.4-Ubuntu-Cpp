@@ -21,6 +21,7 @@ int main(void) {
     string file4 = "solidWhiteCurve.jpg";
     string file5 = "solidYellowLeft.jpg";
     string file6 = "whiteCarLaneSwitch.jpg";
+    string file7 = "test.jpg";
 
     Mat roadBGR1 = imageRead(roadImagePath + file1, IMREAD_COLOR);
     imageShow("roadBGR1", roadBGR1);
@@ -57,6 +58,12 @@ int main(void) {
 
     Mat Output6 =  videoProcessing(roadBGR6);
     imageShow("Output6", Output6);
+
+    Mat roadBGR7 = imageRead(roadImagePath + file7, IMREAD_COLOR);
+    imageShow("roadBGR7", roadBGR7);
+
+    Mat Output7 =  videoProcessing(roadBGR7);
+    imageShow("Output7", Output7);
 
     destroyAllWindows();
 
