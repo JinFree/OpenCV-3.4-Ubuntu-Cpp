@@ -2,7 +2,7 @@
 
 using namespace std;
 using namespace cv;
-Mat videoProcessing(Mat Input) {/*
+Mat videoProcessing(Mat Input) {
     Mat output = Input.clone();
     Mat HSV = convertColor(output, CV_BGR2HSV);
     vector<Mat> HSV_HSV, HSV_Equalized, RGB_RGB, RGB_Equalized;
@@ -14,23 +14,10 @@ Mat videoProcessing(Mat Input) {/*
     for(i = 0 ; i < 3 ; i++) {
         HSV_Equalized[i] = histogramEqualize(HSV_Equalized[i]);
         RGB_Equalized[i] = histogramEqualize(RGB_Equalized[i]);
-    }*/
-///*
-    Mat roadBGR = Input.clone();
+    }
 
-    Mat roadGray = convertColor(roadBGR, CV_BGR2GRAY);
-
-    Mat roadROI2 = trapezoidalROI(roadGray, 0.35, 0.6, -0.1, 0.95);
-
-    Mat roadCanny = cannyEdge(roadROI2, 50, 100);
-
-    Mat roadROI = trapezoidalROI(roadCanny, 0.4, 0.65, 0.0, 0.9);
-
-    vector<Vec4i> lines = HoughLinesP(roadROI, 1.0, CV_PI/60.0, 20, 10, 50);
-
-    Mat roadSum = weightedSum(roadLines, roadBGR);
-//*/
     return output;
+
 }
 int main(void) {
     string roadImagePath = "../../Data/Lane_Detection_Images"/;
