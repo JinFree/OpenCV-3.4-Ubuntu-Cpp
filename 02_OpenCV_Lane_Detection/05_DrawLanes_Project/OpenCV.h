@@ -1,4 +1,4 @@
- #pragma once
+#pragma once
 #include <iostream>
 #include <cmath>
 #include <opencv2/core.hpp>
@@ -10,8 +10,11 @@ using namespace cv;
 
 string path = "../../Data/";
 string lennaImage = "Lenna_Images/Lenna.png";
-string roadImage = "Lane_Detection_Images/solidYellowCurve2.jpg";
+string roadImage = "Lane_Detection_Images/solidYellowCurve.jpg";
 
+Point interpolate(Point p1, Point p2, int y);
+Point MeanVector(vector<Point> v);
+Point MedianVector(vector<Point> v);
 Mat drawLanes(Mat image, vector<Vec4i> lines);
 vector<Vec4i> HoughLinesP(Mat image, double rho = 1.0, double theta = CV_PI / 60.0, int threshold = 20, double minLineLength=10, double maxLineGap=50);
 Mat drawHoughLinesP(Mat image, double rho = 1.0, double theta = CV_PI / 60.0, int threshold = 20, double minLineLength=10, double maxLineGap=50);
@@ -41,6 +44,40 @@ Mat thresholdByData(Mat image, uchar thresh = 128);
 Mat imageRead(string openPath, int flag = IMREAD_UNCHANGED);
 void imageShow(string imageName, Mat image, int flag = CV_WINDOW_NORMAL);
 
+Point interpolate(Point p1, Point p2, int y) {
+    int result;
+    result = double((y-p1.y)*(p2.x-p1.x))/double(p2.y-p1.y)+p1.x;
+    return Point(result,y);
+}
+Point MeanVector(vector<Point> v) {
+    int sum1 = 0;
+    int sum2 = 0;
+    int temp = 0;
+    for (temp = 0 ; temp < v.size();temp++) {
+        sum1 += v[temp].x;
+        sum2 += v[temp].y;
+    }
+    int p_1 = (double)sum1/(double)temp;
+    int p_2 = (double)sum2/(double)temp;
+    return Point(p_1,p_2);
+}
+bool comp(Point a, Point b) {
+    return (a.x>b.x);
+}
+Point MedianVector(vector<Point> v) {
+    size_t size = v.size();
+    sort(v.begin(), v.end(), comp);
+    if (size % 2 == 0)
+    {
+        int x = (v[size/2-1].x+v[size/2].x)/2;
+        int y = (v[size/2-1].y+v[size/2].y)/2;
+        return Point(x,y);
+    }
+    else
+    {
+        return v[size / 2];
+    }
+}
 Mat drawLanes(Mat image, vector<Vec4i> lines) {
     int w = image.cols;
 	int h = image.rows;
@@ -67,51 +104,21 @@ Mat drawLanes(Mat image, vector<Vec4i> lines) {
             right_y.push_back(Point(y1, y2));
         }
  	}
-    int sum1 = 0;
-    int sum2 = 0;
-    int temp = 0;
-    for (temp = 0 ; temp < left_x.size();temp++) {
-        sum1 += left_x[temp].x;
-        sum2 += left_x[temp].y;
-    }
-    int left_x1 = (double)sum1/(double)temp;
-    int left_x2 = (double)sum2/(double)temp;
-
-    sum1 = sum2 = 0;
-    for (temp = 0 ; temp < right_x.size();temp++) {
-        sum1 += right_x[temp].x;
-        sum2 += right_x[temp].y;
-    }
-    int right_x1 = (double)sum1/(double)temp;
-    int right_x2 = (double)sum2/(double)temp;
-
-    sum1 = sum2 = 0;
-    for (temp = 0 ; temp < left_y.size();temp++) {
-        sum1 += left_y[temp].x;
-        sum2 += left_y[temp].y;
-    }
-    int left_y1 = (double)sum1/(double)temp;
-    int left_y2 = (double)sum2/(double)temp;
-
-    sum1 = sum2 = 0;
-    for (temp = 0 ; temp < right_y.size();temp++) {
-        sum1 += right_y[temp].x;
-        sum2 += right_y[temp].y;
-    }
-    int right_y1 = (double)sum1/(double)temp;
-    int right_y2 = (double)sum2/(double)temp;
+    Point left_xp = MeanVector(left_x);
+    Point right_xp = MeanVector(right_x);
+    Point left_yp = MeanVector(left_y);
+    Point right_yp = MeanVector(right_y);
 
     int min_y = image.rows * 0.6;
     int max_y = image.rows;
 
-    int left_min_x = double((min_y - left_y1) * (left_x2 - left_x1) )/double(left_y2-left_y1)+left_x1;
-    int left_max_x = double((max_y - left_y1) * (left_x2 - left_x1) )/double(left_y2-left_y1)+left_x1;
+    Point left_min = interpolate(Point(left_xp.x, left_yp.x), Point(left_xp.y, left_yp.y), min_y);
+    Point left_max = interpolate(Point(left_xp.x, left_yp.x), Point(left_xp.y, left_yp.y), max_y);
+    Point right_min = interpolate(Point(right_xp.x, right_yp.x), Point(right_xp.y, right_yp.y), min_y);
+    Point right_max = interpolate(Point(right_xp.x, right_yp.x), Point(right_xp.y, right_yp.y), max_y);
 
-    int right_min_x = double((min_y - right_y1) * (right_x2 - right_x1) )/double(right_y2-right_y1)+right_x1;
-    int right_max_x = double((max_y - right_y1) * (right_x2 - right_x1) )/double(right_y2-right_y1)+right_x1;
-
-    line( result, Point(left_min_x, min_y), Point(left_max_x, max_y), Scalar(0,0,255), 3, CV_AA);
-    line( result, Point(right_min_x, min_y), Point(right_max_x, max_y), Scalar(0,0,255), 3, CV_AA);
+    line( result, left_min, left_max, Scalar(0,0,255), 3, CV_AA);
+    line( result, right_min, right_max, Scalar(0,0,255), 3, CV_AA);
 
 	return result;
 }
