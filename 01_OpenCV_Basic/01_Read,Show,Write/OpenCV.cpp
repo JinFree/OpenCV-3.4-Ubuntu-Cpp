@@ -17,9 +17,9 @@ int main(void) {
 	string savePath = path + "Lenna_Images/LennaGray.bmp";
 	imwrite(savePath, lennaGray);
 
-	Mat lennaColor2 = imageRead(savePath, CV_LOAD_IMAGE_COLOR);
-	Mat lennaGray2 = imageRead(savePath, CV_LOAD_IMAGE_GRAYSCALE);
-	Mat lennaOrigin2 = imageRead(savePath, CV_LOAD_IMAGE_UNCHANGED);
+	Mat lennaColor2 = imageRead(savePath, IMREAD_COLOR);
+	Mat lennaGray2 = imageRead(savePath, IMREAD_GRAYSCALE);
+	Mat lennaOrigin2 = imageRead(savePath, IMREAD_UNCHANGED);
 
 	imageShow("lennaOrigin2, CV_WINDOW_FREERATIO", lennaOrigin2, CV_WINDOW_FREERATIO);
 	imageShow("lennaGray2, CV_WINDOW_KEEPRATIO", lennaGray2, CV_WINDOW_KEEPRATIO);
