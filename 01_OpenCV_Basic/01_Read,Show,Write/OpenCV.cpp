@@ -10,9 +10,9 @@ int main(void) {
 	Mat lennaGray = imageRead(openPath, IMREAD_GRAYSCALE);
 	Mat lennaOrigin = imageRead(openPath, IMREAD_UNCHANGED);
 
-	imageShow("lennaOrigin, CV_WINDOW_NORMAL", lennaOrigin, CV_WINDOW_NORMAL );
+	imageShow("lennaOrigin, CV_WINDOW_NORMAL", lennaOrigin, CV_WINDOW_NORMAL);
 	imageShow("lennaColor, CV_WINDOW_AUTOSIZE", lennaColor, CV_WINDOW_AUTOSIZE);
-	imageShow("lennaGray, WINDOW_OPENGL", lennaGray, WINDOW_OPENGL  );
+	imageShow("lennaGray, WINDOW_OPENGL", lennaGray, WINDOW_OPENGL);
 
 	string savePath = path + "Lenna_Images/LennaGray.bmp";
 	imwrite(savePath, lennaGray);
@@ -23,8 +23,8 @@ int main(void) {
 
 	imageShow("lennaOrigin2, CV_WINDOW_FREERATIO", lennaOrigin2, CV_WINDOW_FREERATIO);
 	imageShow("lennaGray2, CV_WINDOW_KEEPRATIO", lennaGray2, CV_WINDOW_KEEPRATIO);
-	imageShow("lennaColor2, CV_GUI_NORMAL", lennaColor2, CV_GUI_NORMAL );
-	imageShow("lennaColor2, CV_GUI_EXPANDED", lennaColor2, CV_GUI_EXPANDED );
+	imageShow("lennaColor2, CV_GUI_NORMAL", lennaColor2, CV_GUI_NORMAL);
+	imageShow("lennaColor2, CV_GUI_EXPANDED", lennaColor2, CV_GUI_EXPANDED);
 
 	destroyAllWindows();
 
