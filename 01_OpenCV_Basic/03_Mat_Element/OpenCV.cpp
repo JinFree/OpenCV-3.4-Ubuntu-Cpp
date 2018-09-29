@@ -19,28 +19,28 @@ int main(void) {
 	imageShow("ByAt_Gray", ByAt_Gray);
 
 	timer = (double)getTickCount();
-	Mat ByAt_Color = thresholdByAt(lennaColor, 128);
-	timer = ((double)getTickCount() - timer) / getTickFrequency();
-	cout << "threshold color time at =  " << timer << " sec" << endl;
-	imageShow("ByAt_Color", ByAt_Color);
-
-	timer = (double)getTickCount();
 	Mat ByPtr_Gray = thresholdByPtr(lennaGray, 128);
 	timer = ((double)getTickCount() - timer) / getTickFrequency();
 	cout << "threshold gray time ptr =  " << timer << " sec" << endl;
 	imageShow("ByPtr_Gray", ByPtr_Gray);
 
 	timer = (double)getTickCount();
-	Mat ByPtr_Color = thresholdByPtr(lennaColor, 128);
-	timer = ((double)getTickCount() - timer) / getTickFrequency();
-	cout << "threshold color time ptr =  " << timer << " sec" << endl;
-	imageShow("ByPtr_Color", ByPtr_Color);
-
-	timer = (double)getTickCount();
 	Mat ByData_Gray = thresholdByData(lennaGray, 128);
 	timer = ((double)getTickCount() - timer) / getTickFrequency();
 	cout << "threshold gray time data =  " << timer << " sec" << endl;
 	imageShow("ByData_Gray", ByData_Gray);
+
+	timer = (double)getTickCount();
+	Mat ByAt_Color = thresholdByAt(lennaColor, 128);
+	timer = ((double)getTickCount() - timer) / getTickFrequency();
+	cout << "threshold color time at =  " << timer << " sec" << endl;
+	imageShow("ByAt_Color", ByAt_Color);
+
+	timer = (double)getTickCount();
+	Mat ByPtr_Color = thresholdByPtr(lennaColor, 128);
+	timer = ((double)getTickCount() - timer) / getTickFrequency();
+	cout << "threshold color time ptr =  " << timer << " sec" << endl;
+	imageShow("ByPtr_Color", ByPtr_Color);
 
 	timer = (double)getTickCount();
 	Mat ByData_Color = thresholdByData(lennaColor, 128);
