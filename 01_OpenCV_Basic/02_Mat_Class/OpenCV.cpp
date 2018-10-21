@@ -3,6 +3,10 @@
 using namespace std;
 using namespace cv;
 
+string path = "../../Data/";
+string lennaImage = "Lenna_Images/Lenna.png";
+string roadImage = "Lane_Detection_Images/solidYellowLeft.jpg";
+
 int main(void) {
 	Mat matrix1(2,4,CV_8UC1, 50);
 	imageShow("matrix1", matrix1);
@@ -41,3 +45,24 @@ int main(void) {
 
 	return 0;
 }
+
+#ifdef OPENCV_H_
+Mat imageRead(string openPath, int flag) {
+	Mat image = imread(openPath, flag);
+	if(image.empty()) {
+		cout<<"Image Not Opened"<<endl;
+		cout<<"Program Abort"<<endl;
+		exit(1);
+	}
+	else {
+		cout<<"Image Opened"<<endl;
+		return image;
+	}
+}
+void imageShow(string imageName, Mat image, int flag) {
+    cout << "Display "<< imageName << " Channel: " << image.channels() << endl;
+	namedWindow(imageName, flag);
+    imshow(imageName, image);
+	waitKey(0);
+}
+#endif
