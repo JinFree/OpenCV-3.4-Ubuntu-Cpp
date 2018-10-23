@@ -9,70 +9,51 @@ string roadImage = "Lane_Detection_Images/solidYellowLeft.jpg";
 string sudokuImage = "sudoku-original.jpg";
 
 int main(void) {
-	double timer;
 	string openPath = path + sudokuImage;
+	
 	Mat sudokuColor = imageRead(openPath, IMREAD_COLOR);
 	imageShow("sudokuColor", sudokuColor);
 
 	Mat sudokuGray = imageRead(openPath, IMREAD_GRAYSCALE);
 	imageShow("sudokuGray", sudokuGray);
 
-	timer = (double)getTickCount();
-	Mat ByPtr_Gray = thresholdByPtr(sudokuGray, 128);
-	timer = ((double)getTickCount() - timer) / getTickFrequency();
-	cout << "threshold gray time ptr =  " << timer << " sec" << endl;
-	imageShow("ByPtr_Gray", ByPtr_Gray);
-
-	timer = (double)getTickCount();
-	Mat ByPtr_Color = thresholdByPtr(sudokuColor, 128);
-	timer = ((double)getTickCount() - timer) / getTickFrequency();
-	cout << "threshold color time ptr =  " << timer << " sec" << endl;
-	imageShow("ByPtr_Color", ByPtr_Color);
-
-	timer = (double)getTickCount();
 	Mat ByCV_Gray = thresholdByCV(sudokuGray, 128);
-	timer = ((double)getTickCount() - timer) / getTickFrequency();
-	cout << "threshold gray time cv =  " << timer << " sec" << endl;
 	imageShow("ByCV_Gray", ByCV_Gray);
 
-	timer = (double)getTickCount();
 	Mat ByCV_Color = thresholdByCV(sudokuColor, 128);
-	timer = ((double)getTickCount() - timer) / getTickFrequency();
-	cout << "threshold color time cv =  " << timer << " sec" << endl;
 	imageShow("ByCV_Color", ByCV_Color);
 
 	destroyAllWindows();
+	
+	Mat ThresholdTest(512, 512, CV_8UC1, 128);
+	int i,j;
+	for( j = 0 ; j < ThresholdTest.rows ; j++) {
+	uchar* image_pointer = ThresholdTest.ptr<uchar>(j);
+	for ( i = 0 ; i < ThresholdTest.cols ; i++ ) {
+		image_pointer[i] = i < 256 ? i : 256 - i;} }
+	imageShow("ThresholdTest", ThresholdTest);
+	imwrite("ThresholdTest.bmp", ThresholdTest);
+    
+    
+	Mat CV_THRESH_BINARY = thresholdByCV(ThresholdTest, 128, 255, THRESH_BINARY);
+	imageShow("CV_THRESH_BINARY", CV_THRESH_BINARY);
+	imwrite("CV_THRESH_BINARY.bmp", CV_THRESH_BINARY);
 
-	imageShow("sudokuGray", sudokuGray);
-	imwrite(path+"sudoku-sudokuGray.jpg", sudokuGray);
+	Mat CV_THRESH_BINARY_INV = thresholdByCV(ThresholdTest, 128, 255, THRESH_BINARY_INV);
+	imageShow("CV_THRESH_BINARY_INV", CV_THRESH_BINARY_INV);
+	imwrite("CV_THRESH_BINARY_INV.bmp", CV_THRESH_BINARY_INV);
 
-	Mat CV_Gray_THRESH_BINARY = thresholdByCV(sudokuGray, 128, 255, THRESH_BINARY);
-	imageShow("CV_Gray_THRESH_BINARY", CV_Gray_THRESH_BINARY);
-	imwrite(path+"sudoku-CV_Gray_THRESH_BINARY.jpg", CV_Gray_THRESH_BINARY);
+	Mat CV_THRESH_TRUNC = thresholdByCV(ThresholdTest, 128, 255, THRESH_TRUNC);
+	imageShow("CV_THRESH_TRUNC", CV_THRESH_TRUNC);
+	imwrite("CV_THRESH_TRUNC.bmp", CV_THRESH_TRUNC);
 
-	Mat CV_Gray_THRESH_BINARY_INV = thresholdByCV(sudokuGray, 128, 255, THRESH_BINARY_INV);
-	imageShow("CV_Gray_THRESH_BINARY_INV", CV_Gray_THRESH_BINARY_INV);
-	imwrite(path+"sudoku-CV_Gray_THRESH_BINARY_INV.jpg", CV_Gray_THRESH_BINARY_INV);
+	Mat CV_THRESH_TOZERO = thresholdByCV(ThresholdTest, 128, 255, THRESH_TOZERO);
+	imageShow("CV_THRESH_TOZERO", CV_THRESH_TOZERO);
+	imwrite("CV_THRESH_TOZERO.bmp", CV_THRESH_TOZERO);
 
-	Mat CV_Gray_THRESH_TRUNC = thresholdByCV(sudokuGray, 128, 255, THRESH_TRUNC);
-	imageShow("CV_Gray_THRESH_TRUNC", CV_Gray_THRESH_TRUNC);
-	imwrite(path+"sudoku-CV_Gray_THRESH_TRUNC.jpg", CV_Gray_THRESH_TRUNC);
-
-	Mat CV_Gray_THRESH_TOZERO = thresholdByCV(sudokuGray, 128, 255, THRESH_TOZERO);
-	imageShow("CV_Gray_THRESH_TOZERO", CV_Gray_THRESH_TOZERO);
-	imwrite(path+"sudoku-CV_Gray_THRESH_TOZERO.jpg", CV_Gray_THRESH_TOZERO);
-
-	Mat CV_Gray_THRESH_TOZERO_INV = thresholdByCV(sudokuGray, 128, 255, THRESH_TOZERO_INV);
-	imageShow("CV_Gray_THRESH_TOZERO_INV", CV_Gray_THRESH_TOZERO_INV);
-	imwrite(path+"sudoku-CV_Gray_THRESH_TOZERO_INV.jpg", CV_Gray_THRESH_TOZERO_INV);
-
-	Mat CV_Gray_AdaptiveThreshold_MEAN = adaptiveThresholdByCV(sudokuGray, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 3, 0);
-	imageShow("CV_Gray_AdaptiveThreshold_MEAN", CV_Gray_AdaptiveThreshold_MEAN);
-	imwrite(path+"sudoku-CV_Gray_AdaptiveThreshold_MEAN.jpg", CV_Gray_AdaptiveThreshold_MEAN);
-
-	Mat CV_Gray_AdaptiveThreshold_GAUSSIAN = adaptiveThresholdByCV(sudokuGray, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, 0);
-	imageShow("CV_Gray_AdaptiveThreshold_GAUSSIAN", CV_Gray_AdaptiveThreshold_GAUSSIAN);
-	imwrite(path+"sudoku-CV_Gray_AdaptiveThreshold_GAUSSIAN.jpg", CV_Gray_AdaptiveThreshold_GAUSSIAN);
+	Mat CV_THRESH_TOZERO_INV = thresholdByCV(ThresholdTest, 128, 255, THRESH_TOZERO_INV);
+	imageShow("CV_THRESH_TOZERO_INV", CV_THRESH_TOZERO_INV);
+	imwrite("CV_THRESH_TOZERO_INV.bmp", CV_THRESH_TOZERO_INV);
 
 	destroyAllWindows();
 
@@ -80,11 +61,6 @@ int main(void) {
 }
 
 #ifdef OPENCV_H_
-Mat adaptiveThresholdByCV(Mat image, double maxValue, int adaptiveMethod, int thresholdType, int blockSize, double C ) {
-	Mat result;
-	adaptiveThreshold(image, result, maxValue, adaptiveMethod, thresholdType, blockSize, C);
-	return result;
-}
 Mat thresholdByCV(Mat image, double thresh, double maxval, int type) {
 	Mat result;
 	threshold(image, result, thresh, maxval, type);
